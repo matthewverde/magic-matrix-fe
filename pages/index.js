@@ -3,7 +3,7 @@ import { Layout } from '../components/Layout';
 const Home = () => (
   <div className="container">
     <Head>
-      <title>Create Next App</title>
+      <title>Magic Matrix</title>
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
