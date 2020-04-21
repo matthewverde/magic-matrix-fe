@@ -16,10 +16,10 @@ export function Board({board, disableClicks = false}) {
         </div>
       );
     }
-    let allRows = board.data.map((row, rowNum) => {
+    let allRows = Object.values(board.data).map((row, rowNum) => {
       return(
         <Row key={`row_${rowNum}`}>
-          {row.map((cellValue, colNum) => {
+          {Object.values(row).map((cellValue, colNum) => {
             return(
               <Cell
                 rowNum={rowNum}
