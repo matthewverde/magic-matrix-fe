@@ -9,6 +9,12 @@ import { colorMap } from './colorMap';
 import config from '../config';
 
 const handleBackground = (backgroundValue) => {
+    const valString = String(backgroundValue);
+    if(valString[0] === '#') {
+        return css`
+            background-color: ${valString};
+        `
+    }
     if(isNaN(backgroundValue)) {
         return css`
             background: url("${String(backgroundValue)}") no-repeat scroll 50% 0;
