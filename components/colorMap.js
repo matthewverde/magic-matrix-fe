@@ -10,4 +10,5 @@ export const colorMap = {
     8: '#70ff70',
     9: '#3f1375',
     10: '#ffa8a8',
+    11: '#2ABAC7'
 }
