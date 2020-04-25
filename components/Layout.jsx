@@ -114,7 +114,7 @@ export class Layout extends React.Component {
                 </>
                 )}
                 
-                {isStart && <BoardManager initialBoardName={initialBoardName}/>}
+                {isStart && <BoardManager boardName={initialBoardName}/>}
             </div>
         )
     }

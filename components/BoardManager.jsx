@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import Router from 'next/router';
 
 import { Board } from './Board';
 import { Button } from './Button';
@@ -38,19 +39,23 @@ const StyledBoardWrapper = styled.div`
     justify-content: center;
 `;
 
-export const BoardManager = ({initialBoardName = null, withSelector = true}) => {
-    const [boardName, setBoardName] = useState(initialBoardName);
+export const BoardManager = ({boardName = null, withSelector = true}) => {
+    if(!boardName) {
+        console.log('no board name');
+        Router.push({
+            pathname: '/'
+        })
+    }
     const [board, setBoard] = useState(null);
     const [selectedColor, setSelectedColor] = useState(1);
     const [cellSize, setCellSize] = useState(25);
 
     useEffect(() => {
-        if(!boardName) {
-            return;
-        }
-        const evtSource = new EventSource(`${config.cellServerUrl}/boards/${boardName}`);
-        evtSource.onmessage = (e) => {
-        setBoard(JSON.parse(e.data));
+        if(boardName !== null) {
+            const evtSource = new EventSource(`${config.cellServerUrl}/boards/${boardName}`);
+            evtSource.onmessage = (e) => {
+                setBoard(JSON.parse(e.data));
+            }
         }
      }, [boardName]);
 
