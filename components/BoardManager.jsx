@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import Router from 'next/router';
@@ -49,15 +49,54 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
     const [board, setBoard] = useState(null);
     const [selectedColor, setSelectedColor] = useState(1);
     const [cellSize, setCellSize] = useState(25);
+    const evtSourceRef = useRef(null);
+
+    const editBoard = useCallback((data) => {
+        console.log('top', data);
+        if(typeof data === 'undefined') {
+            return;
+        }
+
+        const {type = 'board'} = data;
+
+        console.log('type', type);
+        if(type === 'board') {
+            setBoard(data);
+        } else if (type === 'update') {
+            if(board === null) {
+                console.log('board null');
+                return;
+            }
+
+            console.log('stateBoard', board);
+            const newBoard = {
+                ...board,
+                data: {
+                    ...board.data,
+                }
+            };
+            console.log('newBoard', newBoard);
+            const {row, col, set} = data;
+            newBoard.data[row][col] = set;
+            console.log('editBoardSet', row, col, set, newBoard);
+            setBoard(newBoard);
+        }
+    },[board]);
 
     useEffect(() => {
         if(boardName !== null) {
-            const evtSource = new EventSource(`${config.cellServerUrl}/boards/${boardName}`);
-            evtSource.onmessage = (e) => {
-                setBoard(JSON.parse(e.data));
+            if(evtSourceRef.current === null) {
+                evtSourceRef.current = new EventSource(`${config.cellServerUrl}/boards/${boardName}`);
+            }
+            evtSourceRef.current.onmessage = (e) => {
+                try {
+                    editBoard(JSON.parse(e.data));
+                } catch (e) {
+                    console.error('caught on eventSource', e);
+                }
             }
         }
-     }, [boardName]);
+     }, [boardName, editBoard]);
 
   return (
     <div>
