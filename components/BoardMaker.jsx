@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import Router from 'next/router';
 
 import { TextInput } from './TextInput';
 import { Button } from './Button';
@@ -60,6 +61,9 @@ export const BoardMaker = ({startBoard}) => {
             }
         }
         asyncMakeCall();
+        Router.push({
+            pathname: `/boards/${boardName}`
+        })
         
     }, [boardName, boardRows, boardCols]);
 
@@ -86,7 +90,7 @@ export const BoardMaker = ({startBoard}) => {
                     </Flex>
                 </Flex>
             </StyledSizeSection>
-            <Button width={"30%"} onClick={() => {onSubmitClick()}}>Make Board</Button>
+            <Button width={"30%"} onClick={onSubmitClick}>Make Board</Button>
         </Wrapper>
     );
 }
