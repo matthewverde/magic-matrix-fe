@@ -15,9 +15,9 @@ import config from '../config'
 const StyledSelectorContainer = styled.div`
     position: fixed;
     left: 0;
-    bottom: 0;
-    height: 20vh;
-    width: 100%;
+    top: 0;
+    height: 100vh;
+    width: 300px;
     z-index: 100;
 `;
 
@@ -31,7 +31,7 @@ const StyledSliderContainer = styled.div`
 `;
 
 const StyledBoardWrapper = styled.div`
-    height: 80vh;
+    height: 100vh;
     padding-right: 16px;
     padding-left: 16px;
     overflow: scroll;

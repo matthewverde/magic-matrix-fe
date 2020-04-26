@@ -1,5 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import styled from 'styled-components';
+import { SketchPicker } from 'react-color'
 
 import { SelectedColorContext } from './SelectedColorContext';
 import { colorMap } from './colorMap';
@@ -29,11 +30,28 @@ const RadioWrapper = styled.div`
     flex-direction: row;
 `;
 
+const PickerWrapper =  styled.div`
+    position: relative;
+`;
+
 export const ColorSelector = ({onChange}) => {
     const [customVal, setCustomVal] = useState(null);
+    const [colorHistory, addColor] = useState([]);
     const colorKeys = Object.keys(colorMap);
 
+    const onPickerChange = (colorObj) => {
+        const { hex } = colorObj;
+        console.log(hex);
+        if(typeof onChange === 'function') {
+            onChange(hex);
+        }
+    }
+
     const onRadioChange = (value) => {
+        if(colorHistory.indexOf(value) === -1) {
+            addColor([...colorHistory,value]);
+        }
+
         if(typeof onChange === 'function') {
             onChange(value);
         }
@@ -48,32 +66,9 @@ export const ColorSelector = ({onChange}) => {
     const selectedColor = useContext(SelectedColorContext);
     return(
         <StyledWrapper>
-            <h3>Select a color</h3>
-            <StyledColorContainer>
-            {
-                colorKeys.map((key) => (
-                    <RadioWrapper key={`color_${key}`}>
-                        <input type="radio"
-                            checked={key == selectedColor}
-                            id={key}
-                            name="selectedColor"
-                            value={key}
-                            onChange={() => {onRadioChange(key)}}/>
-                        <StyledIcon color={colorMap[key]} />
-                    </RadioWrapper>
-                ))
-            }
-            </StyledColorContainer>
-            <StyledColorContainer>
-                <input type="radio"
-                    checked={customVal == selectedColor}
-                    id={customVal}
-                    name="selectedColor"
-                    value={customVal}
-                    onChange={() => {onRadioChange(customVal)}}
-                />
-                <TextInput onChange={val => {setCustomVal(val)}} />
-            </StyledColorContainer>
+            <PickerWrapper>
+                <SketchPicker color={selectedColor} onChange={onPickerChange}/>
+            </PickerWrapper>
         </StyledWrapper>
     )
 }
