@@ -88,10 +88,16 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
     },[board]);
 
     useEffect(() => {
-        if(boardName !== null) {
-            if(evtSourceRef.current === null) {
-                evtSourceRef.current = new EventSource(`${config.cellServerUrl}/boards/${boardName}`);
+        if(typeof boardName === 'string' && boardName.length > 0) {
+            if(evtSourceRef.current !== null) {
+                evtSourceRef.current.close();
             }
+            evtSourceRef.current = new EventSource(`${config.cellServerUrl}/boards/${boardName}`);
+        }
+    }, [boardName])
+
+    useEffect(() => {
+        if(evtSourceRef.current !== null) {
             evtSourceRef.current.onmessage = (e) => {
                 try {
                     editBoard(JSON.parse(e.data));
@@ -100,7 +106,7 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
                 }
             }
         }
-     }, [boardName, editBoard]);
+     }, [editBoard, evtSourceRef.current]);
 
   return (
     <div>

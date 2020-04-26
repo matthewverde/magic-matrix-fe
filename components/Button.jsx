@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import Link from 'next/link'
 
 const StyledButton = styled.div`
     padding: 8px;
@@ -15,15 +16,25 @@ const StyledButton = styled.div`
     font-weight: 500;
 `;
 
-export const Button = ({children, onClick, color = 'white', width}) => {
+export const Button = ({children, onClick, color = 'white', width, href = null}) => {
     const buttonOnClick = () => {
         if(typeof onClick === 'function') {
             onClick();
         }
     }
+
+    const usingLink = href !== null;
     return (
         <StyledButton onClick={() => {buttonOnClick()}} color={color} width={width}>
-            {children}
+            {
+                usingLink ? (
+                    <Link href={href}>
+                        {children}
+                    </Link>
+                ) :
+                children
+            }
+            
         </StyledButton>
     )
 }

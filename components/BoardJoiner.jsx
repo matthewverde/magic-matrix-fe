@@ -36,11 +36,7 @@ export const BoardJoiner = ({startBoard, startMake}) => {
                     <h3>Boards</h3>
                     {boardList.map(name => {
                         return (
-                            <Button width={"400px"} onClick={
-                                () => {
-                                    startBoard(name);
-                                }
-                            }>
+                            <Button width={"400px"} href={`/boards/${name}`}>
                                 {name}
                             </Button>
                         )
