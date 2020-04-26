@@ -1,10 +1,8 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import Router from 'next/router';
 
 import { Board } from './Board';
-import { Button } from './Button';
 import { ColorSelector } from './ColorSelector';
 import { SelectedColorContext } from './SelectedColorContext';
 import { SizeSelector } from './SizeSelector';
@@ -16,9 +14,8 @@ const StyledSelectorContainer = styled.div`
     position: fixed;
     left: 0;
     top: 0;
-    height: 100vh;
-    width: 300px;
     z-index: 100;
+    cursor: grab;
 `;
 
 const StyledSliderContainer = styled.div`
@@ -32,6 +29,7 @@ const StyledSliderContainer = styled.div`
 
 const StyledBoardWrapper = styled.div`
     height: 100vh;
+    width: 100vw;
     padding-right: 16px;
     padding-left: 16px;
     overflow: scroll;
@@ -50,6 +48,15 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
     const [selectedColor, setSelectedColor] = useState(1);
     const [cellSize, setCellSize] = useState(25);
     const evtSourceRef = useRef(null);
+    const selectorRef = useRef(null);
+
+    const handleDrag = useCallback((e) => {
+        if(!selectorRef.current) {
+            console.warn('no selector ref')
+            return;
+        }
+        selectorRef.current.style.transform = `translate(${e.clientX}px,${e.clientY}px)`;
+    })
 
     const editBoard = useCallback((data) => {
         console.log('top', data);
@@ -68,17 +75,14 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
                 return;
             }
 
-            console.log('stateBoard', board);
             const newBoard = {
                 ...board,
                 data: {
                     ...board.data,
                 }
             };
-            console.log('newBoard', newBoard);
             const {row, col, set} = data;
             newBoard.data[row][col] = set;
-            console.log('editBoardSet', row, col, set, newBoard);
             setBoard(newBoard);
         }
     },[board]);
@@ -108,7 +112,7 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
                     </StyledBoardWrapper>
                     )}
                 {board && withSelector && (
-                    <StyledSelectorContainer>
+                    <StyledSelectorContainer ref={selectorRef} draggable onDragEnd={handleDrag}>
                         <ColorSelector onChange={color => {setSelectedColor(color)}}/>
                     </StyledSelectorContainer>
                 )}
