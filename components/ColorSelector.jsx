@@ -7,8 +7,8 @@ import { colorMap } from './colorMap';
 import { TextInput } from './TextInput';
 
 const StyledWrapper = styled.div`
-    height: 100%;
-    width: 100%;
+    /* height: 100%;
+    width: 100%; */
 `;
 
 const StyledColorContainer = styled.div`
@@ -67,7 +67,7 @@ export const ColorSelector = ({onChange}) => {
     return(
         <StyledWrapper>
             <PickerWrapper>
-                <SketchPicker color={selectedColor} onChange={onPickerChange}/>
+                <SketchPicker width={180} color={selectedColor} onChange={onPickerChange}/>
             </PickerWrapper>
         </StyledWrapper>
     )

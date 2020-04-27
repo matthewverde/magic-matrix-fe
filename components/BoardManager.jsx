@@ -12,10 +12,18 @@ import { ShapeFormer } from './ShapeFormer';
 
 import config from '../config'
 
+const StyledFlex = styled.div`
+    display: flex;
+    flex-direction: row;
+`
+
 const StyledSelectorContainer = styled.div`
-    position: fixed;
-    left: 0;
-    top: 0;
+    /* position: fixed; */
+    /* left: 0;
+    top: 0; */
+    display: flex;
+    flex-direction: column;
+    width: 200px;
     z-index: 100;
     cursor: grab;
     background-color: white;
@@ -32,7 +40,8 @@ const StyledSliderContainer = styled.div`
 
 const StyledBoardWrapper = styled.div`
     height: 100vh;
-    width: 100vw;
+    left: 200px;
+    width: calc(100vw - 200px);
     padding-right: 16px;
     padding-left: 16px;
     overflow: scroll;
@@ -169,17 +178,19 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
     <div>
         <SelectedColorContext.Provider value={selectedColor}>
             <CellSizeContext.Provider value={cellSize}>
-                {board && (
-                    <StyledBoardWrapper>
-                        <Board board={board} onClick={onCellClick} />
-                    </StyledBoardWrapper>
+                <StyledFlex>
+                    {board && withSelector && (
+                        <StyledSelectorContainer ref={selectorRef} draggable onDragEnd={handleDrag}>
+                            <ColorSelector onChange={color => {setSelectedColor(color)}}/>
+                            <ShapeFormer onUpdate={onShapeUpdate} />
+                        </StyledSelectorContainer>
                     )}
-                {board && withSelector && (
-                    <StyledSelectorContainer ref={selectorRef} draggable onDragEnd={handleDrag}>
-                        <ColorSelector onChange={color => {setSelectedColor(color)}}/>
-                        <ShapeFormer onUpdate={onShapeUpdate} />
-                    </StyledSelectorContainer>
-                )}
+                    {board && (
+                        <StyledBoardWrapper>
+                            <Board board={board} onClick={onCellClick} />
+                        </StyledBoardWrapper>
+                        )}
+                </StyledFlex>
                 {board && withSelector && (
                     <StyledSliderContainer>
                         <SizeSelector onChange={size => {setCellSize(size)}}/>
