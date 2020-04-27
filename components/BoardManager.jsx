@@ -127,23 +127,16 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
      }, [editBoard, evtSourceRef.current]);
 
      const onCellClick = useCallback(cellObj => {
-         const {row, col, set} = cellObj;
-         const rowsOffset = Math.floor(clickShape.rows / 2)
-         const colsOffset = Math.floor(clickShape.cols / 2)
+         const {row, col} = cellObj;
+         const rowsOffset = Math.floor(clickShape.rows / 2);
+         const colsOffset = Math.floor(clickShape.cols / 2);
          const rowsToSend = [], colsToSend = [], setsToSend = [];
          let shapeRow = 0;
-         for(let curRow = row - rowsOffset; curRow < row + rowsOffset; curRow++) {
+         for(let curRow = row - rowsOffset; curRow <= row + rowsOffset; curRow++) {
              let shapeCol = 0;
-            for(let curCol = col - colsOffset; curCol < col + colsOffset; curCol++) {
+            for(let curCol = col - colsOffset; curCol <= col + colsOffset; curCol++) {
                 if(curRow >= 0 && curCol >= 0) {
                     if(curRow < board.cols && curCol < board.rows && clickShape.data[shapeRow][shapeCol] !== -1) {
-                        console.log(curRow, curCol, clickShape.data[shapeRow][shapeCol]);
-                        const cellObj = {
-                            row: curRow,
-                            col: curCol,
-                            set: clickShape.data[shapeRow][shapeCol],
-                            boardName 
-                        }
                         rowsToSend.push(curRow);
                         colsToSend.push(curCol);
                         setsToSend.push(clickShape.data[shapeRow][shapeCol])
