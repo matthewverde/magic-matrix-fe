@@ -1,7 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 
 import { Board } from './Board';
 import { CellSizeContext } from './CellSizeContext';
+import { Button } from './Button';
 
 const defaultShapeBoard = {
     boardName: 'shapeBoard',
@@ -38,9 +39,25 @@ export const ShapeFormer = ({onUpdate}) => {
         }
     }, [board])
 
+    const resetBoard = useCallback(() => {
+        const newBoard = {
+            ...defaultShapeBoard,
+            data: {
+                ...defaultShapeBoard.data
+            }
+        }
+        for(let i = 0; i < newBoard.rows; i++) {
+            for(let j = 0; j < newBoard.cols; j++) {
+                newBoard.data[i][j] = -1;
+            }
+        }
+        setBoard(newBoard);
+    }, []);
+
     return (
         <CellSizeContext.Provider value={29.2}>
             <Board board={board} onClick={onCellClick} enablePost={false} />
+            <Button onClick={resetBoard}>Reset Shaper</Button>
         </CellSizeContext.Provider>
     )
 }

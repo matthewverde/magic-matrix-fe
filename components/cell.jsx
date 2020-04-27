@@ -71,6 +71,8 @@ export const Cell = ({rowNum, colNum, boardName, value, disableClicks = false, o
             onClick={onCellClick}
             size={cellSize}
             backgroundValue={value}
-        />
+        >
+            {value === -1 ? 'N' : null}
+            </StyledCell>
     )
 }
