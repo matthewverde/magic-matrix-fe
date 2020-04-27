@@ -9,6 +9,7 @@ import { SelectedColorContext } from './SelectedColorContext';
 import { SizeSelector } from './SizeSelector';
 import { CellSizeContext } from './CellSizeContext';
 import { ShapeFormer } from './ShapeFormer';
+import { ColorHistory } from './ColorHistory';
 
 import config from '../config'
 
@@ -163,8 +164,11 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
 
      const onShapeUpdate = useCallback(shapeBoard => {
          setClickShape({...shapeBoard});
-         console.log('shapeBoard', shapeBoard);
      },[])
+
+     const onColorHistoryChange = useCallback(color => {
+        setSelectedColor(color)
+    },[])
 
   return (
     <div>
@@ -175,6 +179,7 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
                         <StyledSelectorContainer >
                             <ColorSelector onChange={color => {setSelectedColor(color)}}/>
                             <ShapeFormer onUpdate={onShapeUpdate} />
+                            <ColorHistory onChange={onColorHistoryChange}/>
                         </StyledSelectorContainer>
                     )}
                     {board && (
