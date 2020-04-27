@@ -1,6 +1,5 @@
 import React, {useContext, useCallback} from 'react';
 import styled, { css } from 'styled-components';
-import axios from 'axios';
 
 import { SelectedColorContext } from './SelectedColorContext';
 import { CellSizeContext } from './CellSizeContext';
@@ -41,30 +40,35 @@ const StyledCell = styled.div`
     ${({withTransition = true}) => withTransition && css`
         transition: background-color .6s ease;
     `}
+    :hover {
+        cursor: pointer;
+    }
 `;
 
-export const Cell = ({rowNum, colNum, boardName, value, disableClicks = false}) => {
+export const Cell = ({rowNum, colNum, boardName, value, disableClicks = false, onClick, enablePost = true}) => {
     const selectedColor = useContext(SelectedColorContext);
     const cellSize = useContext(CellSizeContext);
 
-    const onClick = useCallback(() => {
+    const onCellClick = useCallback(() => {
         if(disableClicks) {
             return;
         }
-        axios.post(
-            `${config.cellServerUrl}/set-board`,
-            {
-                row: rowNum,
-                col: colNum,
-                set: selectedColor,
-                boardName
-            }
-        );
-    }, [selectedColor, disableClicks]);
+        const clickObj = {
+            row: rowNum,
+            col: colNum,
+            set: selectedColor,
+            boardName
+        }
+
+        if(typeof onClick === 'function') {
+            onClick(clickObj);
+        }
+        
+    }, [selectedColor, disableClicks, enablePost, onClick]);
 
     return(
         <StyledCell 
-            onClick={onClick}
+            onClick={onCellClick}
             size={cellSize}
             backgroundValue={value}
         />

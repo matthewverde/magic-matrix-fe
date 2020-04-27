@@ -8,7 +8,7 @@ const Row = styled.div`
   flex-wrap: nowrap;
 `;
 
-export function Board({board, disableClicks = false}) {
+export function Board({board, onClick, disableClicks = false, enablePost}) {
     if(!board || !board.data) {
       return (
         <div>
@@ -28,6 +28,8 @@ export function Board({board, disableClicks = false}) {
                 boardName={board.name}
                 key={`cell_${rowNum}_${colNum}`}
                 disableClicks={disableClicks}
+                onClick={onClick}
+                enablePost={enablePost}
               />
             )
           })}

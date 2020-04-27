@@ -1,12 +1,14 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import styled from 'styled-components';
 import Router from 'next/router';
+import axios from 'axios';
 
 import { Board } from './Board';
 import { ColorSelector } from './ColorSelector';
 import { SelectedColorContext } from './SelectedColorContext';
 import { SizeSelector } from './SizeSelector';
 import { CellSizeContext } from './CellSizeContext';
+import { ShapeFormer } from './ShapeFormer';
 
 import config from '../config'
 
@@ -16,6 +18,7 @@ const StyledSelectorContainer = styled.div`
     top: 0;
     z-index: 100;
     cursor: grab;
+    background-color: white;
 `;
 
 const StyledSliderContainer = styled.div`
@@ -46,6 +49,7 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
     }
     const [board, setBoard] = useState(null);
     const [selectedColor, setSelectedColor] = useState(1);
+    const [ clickShape, setClickShape ] = useState(null)
     const [cellSize, setCellSize] = useState(25);
     const evtSourceRef = useRef(null);
     const selectorRef = useRef(null);
@@ -59,14 +63,11 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
     })
 
     const editBoard = useCallback((data) => {
-        console.log('top', data);
         if(typeof data === 'undefined') {
             return;
         }
 
         const {type = 'board'} = data;
-
-        console.log('type', type);
         if(type === 'board') {
             setBoard(data);
         } else if (type === 'update') {
@@ -83,6 +84,23 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
             };
             const {row, col, set} = data;
             newBoard.data[row][col] = set;
+            setBoard(newBoard);
+        } else if(type === 'update-bulk') {
+            if(board === null) {
+                console.log('board null');
+                return;
+            }
+
+            const newBoard = {
+                ...board,
+                data: {
+                    ...board.data,
+                }
+            };
+            const {rows, cols, sets} = data;
+            for(let i = 0; i < rows.length; i++) {
+                newBoard.data[rows[i]][cols[i]] = sets[i];
+            }
             setBoard(newBoard);
         }
     },[board]);
@@ -108,18 +126,65 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
         }
      }, [editBoard, evtSourceRef.current]);
 
+     const onCellClick = useCallback(cellObj => {
+         const {row, col, set} = cellObj;
+         const rowsOffset = Math.floor(clickShape.rows / 2)
+         const colsOffset = Math.floor(clickShape.cols / 2)
+         const rowsToSend = [], colsToSend = [], setsToSend = [];
+         let shapeRow = 0;
+         for(let curRow = row - rowsOffset; curRow < row + rowsOffset; curRow++) {
+             let shapeCol = 0;
+            for(let curCol = col - colsOffset; curCol < col + colsOffset; curCol++) {
+                if(curRow >= 0 && curCol >= 0) {
+                    if(curRow < board.cols && curCol < board.rows && clickShape.data[shapeRow][shapeCol] !== -1) {
+                        console.log(curRow, curCol, clickShape.data[shapeRow][shapeCol]);
+                        const cellObj = {
+                            row: curRow,
+                            col: curCol,
+                            set: clickShape.data[shapeRow][shapeCol],
+                            boardName 
+                        }
+                        rowsToSend.push(curRow);
+                        colsToSend.push(curCol);
+                        setsToSend.push(clickShape.data[shapeRow][shapeCol])
+                    }
+                }
+                shapeCol++;
+            }
+            shapeRow++;
+         }
+         if(rowsToSend.length) {
+            axios.post(
+                `${config.cellServerUrl}/set-board-bulk`,
+                {
+                    rows: rowsToSend,
+                    cols: colsToSend,
+                    sets: setsToSend,
+                    boardName
+                }
+            );
+         }
+        
+     },[clickShape, board, boardName]);
+
+     const onShapeUpdate = useCallback(shapeBoard => {
+         setClickShape({...shapeBoard});
+         console.log('shapeBoard', shapeBoard);
+     },[])
+
   return (
     <div>
         <SelectedColorContext.Provider value={selectedColor}>
             <CellSizeContext.Provider value={cellSize}>
                 {board && (
                     <StyledBoardWrapper>
-                        <Board board={board} />
+                        <Board board={board} onClick={onCellClick} />
                     </StyledBoardWrapper>
                     )}
                 {board && withSelector && (
                     <StyledSelectorContainer ref={selectorRef} draggable onDragEnd={handleDrag}>
                         <ColorSelector onChange={color => {setSelectedColor(color)}}/>
+                        <ShapeFormer onUpdate={onShapeUpdate} />
                     </StyledSelectorContainer>
                 )}
                 {board && withSelector && (
