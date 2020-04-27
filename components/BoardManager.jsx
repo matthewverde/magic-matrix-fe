@@ -15,6 +15,7 @@ import config from '../config'
 const StyledFlex = styled.div`
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
 `
 
 const StyledSelectorContainer = styled.div`
@@ -61,15 +62,6 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
     const [ clickShape, setClickShape ] = useState(null)
     const [cellSize, setCellSize] = useState(25);
     const evtSourceRef = useRef(null);
-    const selectorRef = useRef(null);
-
-    const handleDrag = useCallback((e) => {
-        if(!selectorRef.current) {
-            console.warn('no selector ref')
-            return;
-        }
-        selectorRef.current.style.transform = `translate(${e.clientX}px,${e.clientY}px)`;
-    })
 
     const editBoard = useCallback((data) => {
         if(typeof data === 'undefined') {
@@ -180,7 +172,7 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
             <CellSizeContext.Provider value={cellSize}>
                 <StyledFlex>
                     {board && withSelector && (
-                        <StyledSelectorContainer ref={selectorRef} draggable onDragEnd={handleDrag}>
+                        <StyledSelectorContainer >
                             <ColorSelector onChange={color => {setSelectedColor(color)}}/>
                             <ShapeFormer onUpdate={onShapeUpdate} />
                         </StyledSelectorContainer>
