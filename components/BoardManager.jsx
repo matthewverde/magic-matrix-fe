@@ -138,7 +138,7 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
              let shapeCol = 0;
             for(let curCol = col - colsOffset; curCol <= col + colsOffset; curCol++) {
                 if(curRow >= 0 && curCol >= 0) {
-                    if(curRow < board.cols && curCol < board.rows && clickShape.data[shapeRow][shapeCol] !== -1) {
+                    if(curRow < board.rows && curCol < board.cols && clickShape.data[shapeRow][shapeCol] !== -1) {
                         rowsToSend.push(curRow);
                         colsToSend.push(curCol);
                         setsToSend.push(clickShape.data[shapeRow][shapeCol])
