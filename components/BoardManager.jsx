@@ -60,8 +60,9 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
     }
     const [board, setBoard] = useState(null);
     const [selectedColor, setSelectedColor] = useState(1);
-    const [ clickShape, setClickShape ] = useState(null)
+    const [clickShape, setClickShape] = useState(null)
     const [cellSize, setCellSize] = useState(25);
+    const [hoverLocation, setHoverLocation] = useState({row: -1, col: -1});
     const evtSourceRef = useRef(null);
 
     const editBoard = useCallback((data) => {
@@ -170,13 +171,21 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
         setSelectedColor(color)
     },[])
 
+    const onCellHover = useCallback((row, col) => {
+        setHoverLocation({row, col});
+    },[setHoverLocation])
+
+    const onBoardMouseLeave = useCallback(() => {
+        setHoverLocation(null);
+    })
+
   return (
     <div>
         <SelectedColorContext.Provider value={selectedColor}>
             <CellSizeContext.Provider value={cellSize}>
                 <StyledFlex>
                     {board && withSelector && (
-                        <StyledSelectorContainer >
+                        <StyledSelectorContainer>
                             <ColorSelector onChange={color => {setSelectedColor(color)}}/>
                             <ShapeFormer onUpdate={onShapeUpdate} />
                             <ColorHistory onChange={onColorHistoryChange}/>
@@ -184,7 +193,7 @@ export const BoardManager = ({boardName = null, withSelector = true}) => {
                     )}
                     {board && (
                         <StyledBoardWrapper>
-                            <Board board={board} onClick={onCellClick} />
+                            <Board board={board} onClick={onCellClick} hoveredBoard={clickShape} hoveredBoardOrigin={hoverLocation} onCellMouseEnter={onCellHover} onMouseLeave={onBoardMouseLeave} />
                         </StyledBoardWrapper>
                         )}
                 </StyledFlex>

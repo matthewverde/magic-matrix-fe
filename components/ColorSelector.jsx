@@ -19,7 +19,6 @@ export const ColorSelector = ({onChange}) => {
 
     const onPickerChange = (colorObj) => {
         const { hex } = colorObj;
-        console.log(hex);
         if(typeof onChange === 'function') {
             onChange(hex);
         }
