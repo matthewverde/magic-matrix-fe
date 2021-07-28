@@ -39,13 +39,23 @@ export class MenuBackgroundBoard extends React.Component {
         this.interval = null;
         this.state = {
             board: menuBoard,
-            cellWidth: DEFAULT_CELL_WIDTH
+            cellWidth: DEFAULT_CELL_WIDTH,
         }
         this.debouncedWindowResize = debounce(this.onWindowResize, 100);
     }
 
+    getCellWidth = () => {
+        let newSize = DEFAULT_CELL_WIDTH;
+        if(typeof window !== 'undefined') {
+            newSize = window.innerWidth / menuBoard.numCols;
+        }
+
+        return newSize < SMALLEST_CELL_WIDTH ? SMALLEST_CELL_WIDTH : newSize
+    }
+
     componentDidMount = () => {
         this.interval = setInterval(this.randomizedBoard, 2000);
+        this.setCellWidth();
         if (typeof window !== 'undefined') {
             window.addEventListener('resize', this.debouncedWindowResize);
         }
@@ -56,9 +66,12 @@ export class MenuBackgroundBoard extends React.Component {
         window.removeEventListener('resize', this.debouncedWindowResize);
     }
 
+    setCellWidth = () => {
+        this.setState({cellWidth: this.getCellWidth()});
+    }
+
     onWindowResize = () => {
-        const newSize = window.innerWidth / this.state.board.numCols;
-        this.setState({cellWidth: newSize < SMALLEST_CELL_WIDTH ? SMALLEST_CELL_WIDTH : newSize})
+        this.setCellWidth()
     }
 
     randomizedBoard = () => {

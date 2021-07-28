@@ -63,7 +63,7 @@ const StyledCell = styled.div`
         transition: background-color .6s ease;
     `}
     :hover {
-        cursor: pointer;
+        cursor: ${({disableClicks}) => disableClicks ? 'default' : 'pointer'};
     }
 `;
 
@@ -101,6 +101,7 @@ export const Cell = ({rowNum, colNum, boardName, value, disableClicks = false, o
             backgroundValue={value}
             onMouseEnter={onCellMouseEnter}
             borderColor={borderColor}
+            disableClicks={disableClicks}
         >
             {value === -1 ? 'N' : null}
             </StyledCell>

@@ -25,16 +25,16 @@ export const Button = ({children, onClick, color = 'white', width, href = null})
 
     const usingLink = href !== null;
     return (
-        <StyledButton onClick={() => {buttonOnClick()}} color={color} width={width}>
-            {
-                usingLink ? (
-                    <Link href={href}>
-                        {children}
-                    </Link>
-                ) :
-                children
-            }
-            
-        </StyledButton>
+        usingLink ? (
+            <Link href={href}>
+                <StyledButton onClick={() => {buttonOnClick()}} color={color} width={width}>
+                    {children}
+                </StyledButton>
+            </Link>
+        ) : (
+            <StyledButton onClick={() => {buttonOnClick()}} color={color} width={width}>
+                {children}
+            </StyledButton>
+        )
     )
 }
