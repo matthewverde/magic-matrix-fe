@@ -84,7 +84,7 @@ export const BoardMaker = ({startBoard}) => {
     return (
         <Wrapper>
             <Text>Name your board</Text>
-            <TextInput initialValue="DnD Crawler" onChange={val => {setBoardName(val)}}/>
+            <TextInput initialValue="My Pixel Grid" onChange={val => {setBoardName(val)}}/>
             <StyledSizeSection>
                 <Text>Board Size</Text>
                 <Flex>
