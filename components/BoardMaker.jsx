@@ -37,6 +37,14 @@ const StyledSizeSection = styled.div`
     align-items: center;
 `;
 
+const MAX_ROW_SIZE = 99;
+const MAX_COL_SIZE = 99;
+
+const defineRows = (requestedRowSize) => {
+    const rowSize = Number(requestedRowSize);
+    
+}
+
 export const BoardMaker = ({startBoard}) => {
     const [ boardName, setBoardName ] = useState('');
     const [ boardRows, setBoardRows ] = useState(20);

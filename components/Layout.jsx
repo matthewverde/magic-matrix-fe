@@ -29,17 +29,21 @@ const StyledMenuMask = styled.div`
 const StyledMaskScreen = styled.div`
     position: relative;
     padding: 32px 16px;
+    height: 100%;
+    overflow-y: scroll;
 `;
 
 const StyledPill = styled.div`
     position: absolute;
     background-color: black;
     color: white;
-    height: 20px;
+    height: 30px;
     border-radius: 100%;
     top: 8px;
     left: 8px;
-    width: 80px;
+    width: 60px;
+    text-align: center;
+    line-height: 30px;
     cursor: pointer;
 `
 
@@ -113,7 +117,6 @@ export class Layout extends React.Component {
                     </StyledMenuMask>
                 </>
                 )}
-                
                 {isStart && <BoardManager boardName={initialBoardName}/>}
             </div>
         )

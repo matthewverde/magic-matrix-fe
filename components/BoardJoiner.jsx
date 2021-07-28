@@ -11,6 +11,10 @@ const ButtonContainer = styled.div`
     align-items: center;
 `;
 
+const BoardHeader = styled.h3`
+    text-align: center;
+`
+
 export const BoardJoiner = ({startBoard, startMake}) => {
     const [boardList, setBoardList] = useState(null);
     useEffect(() => {
@@ -23,7 +27,9 @@ export const BoardJoiner = ({startBoard, startMake}) => {
 
     if(boardList === null) {
         return (
-            <div>loading boards</div>
+            <ButtonContainer>
+                <div>loading boards</div>
+            </ButtonContainer>
         );
     }
 
@@ -32,8 +38,9 @@ export const BoardJoiner = ({startBoard, startMake}) => {
     return(
         <div>
             {boardList && (
+                <>
+                <BoardHeader>Boards</BoardHeader>
                 <ButtonContainer>
-                    <h3>Boards</h3>
                     {boardList.map(name => {
                         return (
                             <Button width={"400px"} href={`/boards/${name}`}>
@@ -42,6 +49,7 @@ export const BoardJoiner = ({startBoard, startMake}) => {
                         )
                     })}
                 </ButtonContainer>
+                </>
             )}
             {
                 !hasList && (
